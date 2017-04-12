@@ -1,15 +1,11 @@
 require 'sinatra'
 require 'json'
 require 'base64'
-require_relative 'models/configuration'
+require_relative 'config/environments'
+require_relative 'models/init'
 
 # Configuration of Sharing Web Service
 class ShareConfigurationsAPI < Sinatra::Base
-  configure do
-    enable :logging
-    Configuration.setup
-  end
-
   get '/?' do
     'ConfigShare web API up at /api/v1'
   end
