@@ -1,4 +1,5 @@
 # Secret_Cloud
+[![Dependency Status](https://gemnasium.com/badges/github.com/Tai-Chi/Secret_Cloud.svg)](https://gemnasium.com/github.com/Tai-Chi/Secret_Cloud)
 * Main idea: A project to periodically backup some files/folders on our local computer to Google Drive.
 * Features:
   * To ensure that our data cannot be read by the service provider, we may encrypt our files/folders before uploading them to Google Drive.
@@ -25,5 +26,5 @@
 - post `[username]/update/[absolute path]/[portion number]`: tells the server to update the file content. Updating a folder means updating files inside. Therefore we can do this only for files many times and ignore folders.
 
 #### Notes
-* To ensure the safety of our URL commands, the /[absolute path]/[portion number] part may be passed with the HTTP request body.
+* To ensure the safety of our URL commands, the /[absolute path]/[portion number] part should be passed with the HTTP request body.
 * All post methods will return a list of parameters, in json format, required to call Google APIs.
