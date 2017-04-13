@@ -1,17 +1,50 @@
 require 'sinatra'
 require 'json'
 require 'base64'
-require_relative 'models/configuration'
+require_relative 'config/environments'
+require_relative 'models/init'
+
 
 # Configuration of Service to Backup File System
 class FileSystemSyncAPI < Sinatra::Base
-  private:
+  private
   @filesysList #<Array of Tree>
 
-  public:
+  public
+  def initialize
+    super
+    @filesysList = []
+  end
+
   configure do
     enable :logging
-    Configuration.setup
+    #Configuration.setup
+  end
+
+  def create_folder(uid, tree, pathUnits)
+    state = :trace
+    dir = tree.root_dir.clone
+    path = ['']
+
+    pathUnits.each do |fname|
+      path.push(fname)
+      pid = dir.id
+      if state == :trace
+        tmp = dir.find_file(true, fname)
+        dir = tmp if tmp != nil
+      end
+
+      state = :add if state==:trace && tmp==nil
+      if state == :add
+        # For database
+        file = Tfile.create(name: fname, folder: true,parent_id: pid, user_id: uid)
+        logger.info "NEW FOLDER CREATED: #{path.join('/')}"
+        # For our in-memory tree
+        dir.add_file(file)
+        dir = file
+      end
+    end
+    dir
   end
 
   get '/?' do
@@ -20,95 +53,43 @@ class FileSystemSyncAPI < Sinatra::Base
 
   get '/users/?' do
     content_type 'application/json'
-    output = { name: User.all }
+    output = { name: User.select(:name, :id).all }
     JSON.pretty_generate(output)
   end
-=begin
-  get '/:name/?' do
-    content_type 'text/plain'
-    begin
-      Base64.strict_decode64 Configuration.find(params[:id]).document
-    rescue => e
-      status 404
-      e.inspect
-    end
-  end
-
-  get '/:name/create/folder/:path' do
-    content_type 'application/json'
-    begin
-      output = { configuration_id: Configuration.find(params[:id]) }
-      JSON.pretty_generate(output)
-    rescue =>e
-      status 404
-      logger.info "FAILED to GET configuration: #{e.inspect}"
-    end
-  end
-=end
  
-  def create_folder(tree, pathUnits)
-    dir = tree.root_dir.clone
-    # check each component of objList to verify
-    # that the path is valid
-    pathUnits.each do |fname|
-      pid = dir.id
-      if state=='trace'
-        tmp = dir.find_file(false, fname)
-        dir = tmp if tmp != NIL
-      end
-      state = 'add' if state=='trace' && tmp==NIL
-      if state=='add'
-        # For database
-        id = File.insert(:name => fname,
-                         :attr => 'folder',
-                         :pid => pid,
-                         :uid => uid
-                        ).returning(:id)
-        # For our in-memory tree
-        file = File.new(false, fname, id)
-        dir.add_file(file)
-        dir = file
-      end
-    end
-    return dir
-  end
-  
-  post ':uname/create/folder/?' do
+  post '/:uname/create/folder/?' do
     content_type 'application/json'
     begin
-      state = 'trace'
-      uid = User.where("name = #{params[:uname]}").select(:id).first
-      if @filesysList.at(uid) != NIL
+      uid = User.where(:name => params[:uname]).first.id
+
+      if @filesysList[uid] != nil
         tree = @filesysList.at(uid)
       else
-        tree = Tree.new(params[:uname])
-        @filesysList.insert(uid, tree)
+        tree = Tree.new(uid, params[:uname])
+        @filesysList[uid] = tree
       end
-      pathUnits = JSON.parse(request.body.read)['path'].split('/\\')
-      # if create_folder(tree,pathUnits)=='add'
-      create_folder(tree,pathUnits)
-        logger.info "NEW FOLDER CREATED: #{path}"
-      #else
-       # logger.info "The folder #{path} has existed."
-      #end
-      status 200
 
-      # redirect '/api/v1/configurations/#{new_config.id}.json'
+      path = JSON.parse(request.body.read)['path']
+      pathUnits = path.split(/[\\\/]/)
+      pathUnits.select! { |unit| !unit.empty? }
+      create_folder(uid, tree, pathUnits)
+
+      status 200
     rescue => e
       logger.info "FAILED to create the new folder: #{inspect}"
       status 400
     end
   end
 
-  post ':uname/create/file/?' do
+  post '/:uname/create/file/?' do
     content_type 'application/json'
     begin
       uid = User.where("name = #{params[:uname]}").select(:id).first
-      if @filesysList.at(uid) != NIL
+      if @filesysList[uid] != NIL
         tree = @filesysList.at(uid)
       else
-        tree = Tree.new(params[:uname])
-        @filesysList.insert(uid, tree)
+        tree = Tree.new(uid, params[:uname])
+        @filesysList[uid] = tree
       end
       pathUnits = JSON.parse(request.body.read)['path'].split('/\\')
       portion = JSON.parse(request.body.read)['portion']
@@ -132,15 +113,15 @@ class FileSystemSyncAPI < Sinatra::Base
     end
   end
 
-  post ':uname/delete/?' do
+  post '/:uname/delete/?' do
     content_type 'application/json'
     begin
       uid = User.where("name = #{params[:uname]}").select(:id).first
-      if @filesysList.at(uid) != NIL
-        tree = @filesysList.at(uid)
+      if @filesysList[uid] != NIL
+        tree = @filesysList[uid]
       else
-        tree = Tree.new(params[:uname])
-        @filesysList.insert(uid, tree)
+        tree = Tree.new(uid, params[:uname])
+        @filesysList[uid] = tree
       end
       pathUnits = JSON.parse(request.body.read)['path'].split('/\\')
       fname = pathUnits.last
@@ -173,5 +154,4 @@ class FileSystemSyncAPI < Sinatra::Base
       status 400
     end
   end
-
 end
