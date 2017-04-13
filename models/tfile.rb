@@ -19,7 +19,7 @@ class Tfile < Sequel::Model
 
   def find_file(folder, name)
     raise 'We can only find a file in a folder.' unless folder
-    @list ||= []
+    @list ||= children
     @list.each do |file|
       return file if file.folder==folder && file.name==name
     end

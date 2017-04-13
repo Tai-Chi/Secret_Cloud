@@ -23,4 +23,15 @@ namespace :db do
 
   desc 'Perform migration reset (full rollback and migration)'
   task reset: [:rollback, :migrate]
+
+  desc 'Recreate the whole database'
+  task :rebuild => :reset do
+    User.insert(:name=>'Fxxk', :passwd=>'Fxxk')
+  end
+end
+
+desc 'Create folder'
+task :test => 'db:rebuild' do
+  sh 'http POST http://localhost:9292/Fxxk/create/folder/ path=\'/a/b\''
+  sh 'http POST http://localhost:9292/Fxxk/create/folder/ path=\'/a//b///c\''
 end
