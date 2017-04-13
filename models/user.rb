@@ -9,8 +9,8 @@ class User < Sequel::Model
            type: 'user',
            id: id,
            attributes: {
-             name: name,
-             passwd: passwd
+             name: name
+             #passwd: passwd
            }
          },
          options)
