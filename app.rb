@@ -9,6 +9,7 @@ require_relative 'models/init'
 class FileSystemSyncAPI < Sinatra::Base
   private
   @filesysList #<Array of Tree>
+  @duplicate   #<Boolean>
 
   public
   def initialize
@@ -44,6 +45,12 @@ class FileSystemSyncAPI < Sinatra::Base
         dir = file
       end
     end
+    if state == :trace
+      logger.info 'The folder has already existed.'
+      @duplicate = true
+    else
+      @duplicate = false
+    end
     dir
   end
 
@@ -74,7 +81,11 @@ class FileSystemSyncAPI < Sinatra::Base
       pathUnits.select! { |unit| !unit.empty? }
       create_folder(uid, tree, pathUnits)
 
-      status 200
+      if @duplicate == false
+        status 200
+      else
+        status 403
+      end
     rescue => e
       logger.info "FAILED to create the new folder: #{inspect}"
       status 400

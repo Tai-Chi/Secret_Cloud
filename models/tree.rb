@@ -28,7 +28,7 @@ class Tree
       fList[@root_dir.id] = @root_dir
     end
   end
-
+=begin
   def find_file_by_path(path)
     list = path.split(/[\\\/]/)
     find_file_by_unit(list)
@@ -42,4 +42,5 @@ class Tree
     end
     dir
   end
+=end
 end

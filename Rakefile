@@ -1,7 +1,27 @@
 require './app'
 require 'rake/testtask'
 
+ENV['RACK_ENV'] = 'test'
 puts "Environment: #{ENV['RACK_ENV'] || 'development'}"
+
+task default: [:spec]
+
+desc 'Tests API root route'
+task :api_spec => 'db:reset' do
+  sh 'ruby specs/api_spec.rb'
+end
+
+desc 'Run all the tests'
+Rake::TestTask.new(:spec) do |t|
+  task :spec => 'db:reset'
+  t.pattern = 'specs/*_spec.rb'
+  t.warning = false
+end
+
+desc 'Runs rubocop on tested code'
+task rubo: [:spec] do
+  sh 'rubocop app.rb models/*.rb'
+end
 
 namespace :db do
   require 'sequel'
@@ -23,15 +43,4 @@ namespace :db do
 
   desc 'Perform migration reset (full rollback and migration)'
   task reset: [:rollback, :migrate]
-
-  desc 'Recreate the whole database'
-  task :rebuild => :reset do
-    User.insert(:name=>'Fxxk', :passwd=>'Fxxk')
-  end
-end
-
-desc 'Create folder'
-task :test => 'db:rebuild' do
-  sh 'http POST http://localhost:9292/Fxxk/create/folder/ path=\'/a/b\''
-  sh 'http POST http://localhost:9292/Fxxk/create/folder/ path=\'/a//b///c\''
 end
