@@ -14,8 +14,6 @@ gem 'rbnacl-libsodium'
 
 group :development do
   gem 'rerun'
-  gem 'guard'
-  gem 'guard-yield'
 end
 
 group :test do
