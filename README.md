@@ -20,8 +20,8 @@
 - post `create/file` + [username] + [absolute path] + [portion number]: tells the server to create a file. If the file is too large, the portion number tells the server the correct order to combine this file.
 - post `delete/folder` + [username] + [absolute path]: tells the server to delete a folder
 - post `delete/file` + [username] + [absolute path]: tells the server to delete a file. All portions of this file must be deleted.
-- post `rename/folder` + [username] + [old absolute path] + [new absolute path]: tells the server to rename a folder
-- post `rename/file` + [username] + [old absolute path] + [new absolute path]: tells the server to rename a file. All portions of this file must be renamed.
+- post `rename/folder` + [username] + [old absolute path] + [new folder name]: tells the server to rename a folder
+- post `rename/file` + [username] + [old absolute path] + [new file name]: tells the server to rename a file. All portions of this file must be renamed.
 - post `giveid` + [username] + [new id] + [absolute path] + [portion number]: tells the server to add the file id given by Google Drive. Although a folder also has id in Google Drive, we don't have to do this for folders because we never uploads a folder.
 
 #### Notes

@@ -1,5 +1,5 @@
-require './app'
 require 'rake/testtask'
+require './init.rb'
 
 ENV['RACK_ENV'] = 'test'
 puts "Environment: #{ENV['RACK_ENV'] || 'development'}"
