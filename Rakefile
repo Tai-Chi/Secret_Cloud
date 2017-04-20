@@ -43,4 +43,10 @@ namespace :db do
 
   desc 'Perform migration reset (full rollback and migration)'
   task reset: [:rollback, :migrate]
+
+  desc 'Self-built database'
+  task :selfbuild => :reset do
+    User.insert(name: 'Alan', passwd: 'Alan')
+  end
+
 end
