@@ -17,11 +17,11 @@ class Tfile < Sequel::Model
     @list.push(file)
   end
 
-  def find_file(folder, name)
+  def find_file(dir, name, portion)
     raise 'We can only find a file in a folder.' unless folder
     @list ||= children
     @list.each do |file|
-      return file if file.folder==folder && file.name==name
+      return file if file.folder==dir && file.name==name && (dir||(file.portion==portion))
     end
     return nil
   end

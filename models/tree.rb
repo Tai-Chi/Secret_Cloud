@@ -3,6 +3,7 @@ require 'sequel'
 class Tree
   public
   attr_reader :root_dir #<Tfile>
+  #attr_reader :fList #<Array of Tfile>
 
   # Specify someone's file system
   # How to recover the whole tree from the sql table?
@@ -20,27 +21,27 @@ class Tree
         fList[file.parent_id].add_file(file)
       end
     end
-
     if ftable.empty?
-      @root_dir = Tfile.create(folder: true, name: 'ROOT', user_id: uid)
+      @root_dir = Tfile.create(folder: true, name: 'ROOT', user_id: uid, portion: 0)
       @root_dir.parent_id = @root_dir.id
       @root_dir.save
       fList[@root_dir.id] = @root_dir
     end
   end
-=begin
-  def find_file_by_path(path)
+
+  def find_file_by_path(folder, path, portion)
     list = path.split(/[\\\/]/)
-    find_file_by_unit(list)
+    list.select! { |unit| !unit.empty? } # This line is very important !!
+    find_file_by_unit(folder, list, portion)
   end
 
-  def find_file_by_unit(pathUnits)
+  def find_file_by_unit(folder, pathUnits, portion)
     raise 'The path must be nonempty.' unless pathUnits.size > 0
     dir = @root_dir.clone
     pathUnits.each_with_index do |fname, index|
-      dir = dir.find_file(index==pathUnits.size-1, fname)
+      dir = dir.find_file((index!=pathUnits.size-1)||folder, fname, portion) if dir != nil
     end
-    dir
+    return dir
   end
-=end
+
 end
