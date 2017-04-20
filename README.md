@@ -15,21 +15,20 @@
 ## Routes
 
 - get `users/`: returns a json of all usernames
-- get `[username]/`: returns the whole selected file system of a user specified by its ID
-- post `[username]/create/folder/[absolute path]`: tells the server to create an empty folder
-- post `[username]/create/file/[absolute path]/[portion number]`: tells the server to create a file. If the file is too large, the portion number tells the server the correct order to combine this file.
-- post `[username]/delete/folder/[absolute path]`: tells the server to delete a folder
-- post `[username]/delete/file/[absolute path]`: tells the server to delete a file. All portions of this file must be deleted.
-- post `[username]/rename/folder/[absolute path]`: tells the server to rename a folder
-- post `[username]/rename/file/[absolute path]`: tells the server to rename a file. All portions of this file must be renamed.
-- post `[username]/giveid/[new id]/[absolute path]/[portion number]`: tells the server to add the file id given by Google Drive. Although a folder also has id in Google Drive, we don't have to do this for folders because we never uploads a folder.
-- post `[username]/update/[absolute path]/[portion number]`: tells the server to update the file content. Updating a folder means updating files inside. Therefore we can do this only for files many times and ignore folders.
+- get `[username]/`: returns the whole file system of a user specified by its ID, in the form of a special data structure
+- post `create/folder` + [username] + [absolute path]: tells the server to create an empty folder
+- post `create/file` + [username] + [absolute path] + [portion number]: tells the server to create a file. If the file is too large, the portion number tells the server the correct order to combine this file.
+- post `delete/folder` + [username] + [absolute path]: tells the server to delete a folder
+- post `delete/file` + [username] + [absolute path]: tells the server to delete a file. All portions of this file must be deleted.
+- post `rename/folder` + [username] + [old absolute path] + [new absolute path]: tells the server to rename a folder
+- post `rename/file` + [username] + [old absolute path] + [new absolute path]: tells the server to rename a file. All portions of this file must be renamed.
+- post `giveid` + [username] + [new id] + [absolute path] + [portion number]: tells the server to add the file id given by Google Drive. Although a folder also has id in Google Drive, we don't have to do this for folders because we never uploads a folder.
 
 #### Notes
-* To ensure the safety of our URL commands, the /[absolute path]/[portion number] part should be passed with the HTTP request body.
+* To ensure the safety of our URL commands, the data part enclosed with [] above should be passed with the HTTP request body.
 * All post methods will return a list of parameters, in json format, required to call Google APIs.
-###DONE
 
+### DONE
 
 ### TODO
 
