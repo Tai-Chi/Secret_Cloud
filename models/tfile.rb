@@ -26,6 +26,19 @@ class Tfile < Sequel::Model
     return nil
   end
 
+  def recur_delete
+    @list ||= children
+    @list.each do |file|
+      if file.folder
+        file.recur_delete
+      else
+        file.delete
+      end
+    end
+    @list = []
+    self.delete
+  end
+
   def to_json(options = {})
     JSON({
            type: 'tfile',
