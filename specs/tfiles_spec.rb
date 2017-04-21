@@ -185,4 +185,44 @@ describe 'Testing file/folder resource routes' do
     end
   end
 
+  describe 'Deleting files' do
+    it 'HAPPY: should delete the file' do
+      req_header = { 'CONTENT_TYPE' => 'application/json' }
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1 }.to_json
+      post '/create/file', req_body, req_header
+      _(last_response.status).must_equal 200
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 2 }.to_json
+      post '/create/file', req_body, req_header
+      _(last_response.status).must_equal 200
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt' }.to_json
+      post '/delete/file', req_body, req_header
+      _(last_response.status).must_equal 200
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1 }.to_json
+      post '/create/file', req_body, req_header
+      _(last_response.status).must_equal 200
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 2 }.to_json
+      post '/create/file', req_body, req_header
+      _(last_response.status).must_equal 200
+    end
+
+    it 'SAD: should not delete a folder here' do
+      req_header = { 'CONTENT_TYPE' => 'application/json' }
+      req_body = { username: 'Guest', path: '/home/Guest/test' }.to_json
+      post '/create/folder', req_body, req_header
+      _(last_response.status).must_equal 200
+      req_body = { username: 'Guest', path: '/home/Guest/test' , portion: 0}.to_json
+      post '/delete/file', req_body, req_header
+      _(last_response.status).must_equal 403
+    end
+
+    it 'SAD: should not delete a non-existing file' do
+      req_header = { 'CONTENT_TYPE' => 'application/json' }
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1 }.to_json
+      post '/create/file', req_body, req_header
+      req_body = { username: 'Guest', path: '/home/Guest/haha/test.txt' }.to_json
+      post '/delete/file', req_body, req_header
+      _(last_response.status).must_equal 403
+    end
+  end
+  
 end
