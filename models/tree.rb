@@ -37,7 +37,7 @@ class Tree
 
   def find_file_by_unit(folder, pathUnits, portion)
     raise 'The path must be nonempty.' unless pathUnits.size > 0
-    dir = @root_dir.clone
+    dir = @root_dir
     pathUnits.each_with_index do |fname, index|
       dir = dir.find_file((index!=pathUnits.size-1)||folder, fname, portion) if dir != nil
     end
