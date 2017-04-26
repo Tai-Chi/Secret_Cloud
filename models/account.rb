@@ -1,12 +1,12 @@
 require 'json'
 require 'sequel'
 
-class User < Sequel::Model
+class Account < Sequel::Model
   one_to_many :fileinfos
 
   def to_json(options = {})
     JSON({
-           type: 'user',
+           type: 'account',
            id: id,
            attributes: {
              name: name,

@@ -5,7 +5,7 @@ class Fileinfo < Sequel::Model
   public
   attr_reader :list #<Array of Fileinfo>
 
-  many_to_one :user
+  many_to_one :account
   many_to_one :gaccount
   many_to_one :parent, :class=>self
   one_to_many :children, :class=>self, :key=>:parent_id
@@ -62,7 +62,7 @@ class Fileinfo < Sequel::Model
              name: name,
              folder: folder,
              parent: parent_id,
-             user: user_id,
+             account: account_id,
              portion: portion,
              gaccount: gaccount_id,
              gfid: gfid

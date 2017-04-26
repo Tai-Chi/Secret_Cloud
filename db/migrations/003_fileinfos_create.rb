@@ -7,7 +7,7 @@ Sequel.migration do
       String :name, null: false
       TrueClass :folder, null:false
       foreign_key :parent_id, :fileinfos 
-      foreign_key :user_id, :users
+      foreign_key :account_id, :accounts
       Integer :portion
       foreign_key :gaccount_id, :gaccounts
       String :gfid

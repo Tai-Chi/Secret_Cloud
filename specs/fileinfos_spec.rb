@@ -7,8 +7,8 @@ describe 'Testing file/folder resource routes' do
   end
   before(:all) do
     Fileinfo.dataset.delete
-    User.dataset.delete
-    User.insert(name: 'Guest', passwd: 'guest')
+    Account.dataset.delete
+    Account.insert(name: 'Guest', passwd: 'guest')
   end
 
   describe 'Creating new folders' do

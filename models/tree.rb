@@ -10,7 +10,7 @@ class Tree
   def initialize(uid, uname)
     raise 'uname cannot be nil' unless uname != nil
     fList = []
-    ftable = User[uid].fileinfos
+    ftable = Account[uid].fileinfos
     ftable.each do |file|
       fList[file.id] = file
     end
@@ -22,7 +22,7 @@ class Tree
       end
     end
     if ftable.empty?
-      @root_dir = Fileinfo.create(folder: true, name: 'ROOT', user_id: uid, portion: 0)
+      @root_dir = Fileinfo.create(folder: true, name: 'ROOT', account_id: uid, portion: 0)
       @root_dir.parent_id = @root_dir.id
       @root_dir.save
       fList[@root_dir.id] = @root_dir

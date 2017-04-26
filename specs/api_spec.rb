@@ -4,16 +4,16 @@ describe 'All route tests' do
   # Run before each describe block
   before(:all) do
     Fileinfo.dataset.delete
-    User.dataset.delete
+    Account.dataset.delete
     Gaccount.dataset.delete
-    User.insert(name: 'Dennis Hsieh', passwd: 'Hsieh Dennis')
-    User.insert(name: 'Joey Hong', passwd: 'Hong Joey')
-    User.insert(name: 'Alan Tsai', passwd: 'Tsai Alan')
+    Account.insert(name: 'Dennis Hsieh', passwd: 'Hsieh Dennis')
+    Account.insert(name: 'Joey Hong', passwd: 'Hong Joey')
+    Account.insert(name: 'Alan Tsai', passwd: 'Tsai Alan')
   end
 
-  describe 'Test /users route' do
-    it 'should return all users of our system' do
-      get '/users'
+  describe 'Test /accounts route' do
+    it 'should return all accounts of our system' do
+      get '/accounts'
       _(last_response.body).must_include 'name'
       _(last_response.body).must_include 'Dennis'
       _(last_response.body).must_include 'Hsieh'
@@ -26,7 +26,7 @@ describe 'All route tests' do
   end
 
   describe 'Test /create/folder route' do
-    it 'should successfully create folders for all users' do
+    it 'should successfully create folders for all accounts' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
       req_body = { username: 'Dennis Hsieh', path: '/home' }.to_json
       post '/create/folder', req_body, req_header

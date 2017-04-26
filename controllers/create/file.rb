@@ -7,7 +7,7 @@ class FileSystemSyncAPI < Sinatra::Base
     begin
       request.body.rewind
       uname = JSON.parse(request.body.read)['username']
-      uid = User.where(:name => uname).first.id
+      uid = Account.where(:name => uname).first.id
 
       if @filesysList[uid] != nil
         tree = @filesysList.at(uid)
@@ -29,7 +29,7 @@ class FileSystemSyncAPI < Sinatra::Base
       if dir.find_file(false, fName, portionNum) == nil
         # For database
         file = Fileinfo.create(name: fName, folder: false, parent_id: dir.id,
-        user_id: uid, portion: portionNum)
+        account_id: uid, portion: portionNum)
         # For our in-memory tree
         dir.add_file(file)
         # Here we may also verify that all portions before portionNum

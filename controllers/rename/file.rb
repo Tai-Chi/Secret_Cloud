@@ -7,7 +7,7 @@ class FileSystemSyncAPI < Sinatra::Base
     begin
       request.body.rewind
       uname = JSON.parse(request.body.read)['username']
-      uid = User.where(:name => uname).first.id
+      uid = Account.where(:name => uname).first.id
 
       if @filesysList[uid] != nil
         tree = @filesysList.at(uid)
