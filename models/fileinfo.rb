@@ -1,9 +1,9 @@
 require 'json'
 require 'sequel'
 
-class Tfile < Sequel::Model
+class Fileinfo < Sequel::Model
   public
-  attr_reader :list #<Array of Tfile>
+  attr_reader :list #<Array of Fileinfo>
 
   many_to_one :user
   many_to_one :gaccount
@@ -12,7 +12,7 @@ class Tfile < Sequel::Model
 
   def add_file(file)
     raise 'we can only add file into a folder.' unless folder
-    raise 'file of course must be of type Tfile.' unless file.instance_of? Tfile
+    raise 'file of course must be of type Fileinfo.' unless file.instance_of? Fileinfo
     @list ||= []
     @list.push(file)
   end
@@ -56,7 +56,7 @@ class Tfile < Sequel::Model
 
   def to_json(options = {})
     JSON({
-           type: 'tfile',
+           type: 'fileinfo',
            id: id,
            attributes: {
              name: name,

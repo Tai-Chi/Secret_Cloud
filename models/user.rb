@@ -2,7 +2,7 @@ require 'json'
 require 'sequel'
 
 class User < Sequel::Model
-  one_to_many :tfiles
+  one_to_many :fileinfos
 
   def to_json(options = {})
     JSON({

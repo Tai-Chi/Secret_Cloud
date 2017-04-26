@@ -2,7 +2,7 @@ require 'json'
 require 'sequel'
 
 class Gaccount < Sequel::Model
-  one_to_many :tfiles
+  one_to_many :fileinfos
 
   def to_json(options = {})
     JSON({

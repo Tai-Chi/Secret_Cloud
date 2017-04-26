@@ -3,7 +3,7 @@ require_relative './spec_helper'
 describe 'All route tests' do
   # Run before each describe block
   before(:all) do
-    Tfile.dataset.delete
+    Fileinfo.dataset.delete
     User.dataset.delete
     Gaccount.dataset.delete
     User.insert(name: 'Dennis Hsieh', passwd: 'Hsieh Dennis')

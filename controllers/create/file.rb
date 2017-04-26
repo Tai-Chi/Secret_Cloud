@@ -28,7 +28,7 @@ class FileSystemSyncAPI < Sinatra::Base
       dir = create_folder(uid, tree, pathUnits)
       if dir.find_file(false, fName, portionNum) == nil
         # For database
-        file = Tfile.create(name: fName, folder: false, parent_id: dir.id,
+        file = Fileinfo.create(name: fName, folder: false, parent_id: dir.id,
         user_id: uid, portion: portionNum)
         # For our in-memory tree
         dir.add_file(file)

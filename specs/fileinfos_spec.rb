@@ -2,11 +2,11 @@ require_relative './spec_helper'
 
 describe 'Testing file/folder resource routes' do
   before(:each) do
-    Tfile.dataset.delete
+    Fileinfo.dataset.delete
     Gaccount.dataset.delete
   end
   before(:all) do
-    Tfile.dataset.delete
+    Fileinfo.dataset.delete
     User.dataset.delete
     User.insert(name: 'Guest', passwd: 'guest')
   end
