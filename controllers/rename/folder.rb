@@ -5,21 +5,13 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/rename/folder/?' do
     content_type 'application/json'
     begin
-      request.body.rewind
-      uname = JSON.parse(request.body.read)['username']
+      request_body = JSON.parse(request.body.read)
+      uname = request_body['username']
+      name = request_body['new_name']
+      path = request_body['old_path']
+
       uid = Account.where(:name => uname).first.id
-
-      if @filesysList[uid] != nil
-        tree = @filesysList.at(uid)
-      else
-        tree = Tree.new(uid, uname)
-        @filesysList[uid] = tree
-      end
-
-      request.body.rewind
-      name = JSON.parse(request.body.read)['new_name']
-      request.body.rewind
-      path = JSON.parse(request.body.read)['old_path']
+      tree = get_tree(uid, uname)
 
       file = tree.find_file_by_path(true, path, 0)
       if name == ""

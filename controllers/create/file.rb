@@ -5,27 +5,19 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/create/file/?' do
     content_type 'application/json'
     begin
-      request.body.rewind
-      uname = JSON.parse(request.body.read)['username']
-      uid = Account.where(:name => uname).first.id
-
-      if @filesysList[uid] != nil
-        tree = @filesysList.at(uid)
-      else
-        tree = Tree.new(uid, uname)
-        @filesysList[uid] = tree
-      end
- 
-      request.body.rewind
-      portionNum = Integer(JSON.parse(request.body.read)['portion'])
+      request_body = JSON.parse(request.body.read)
+      uname = request_body['username']
+      path = request_body['path']
+      portionNum = Integer(request_body['portion'])
       
-      request.body.rewind
-      path = JSON.parse(request.body.read)['path']
+      uid = Account.where(:name => uname).first.id
+      tree = get_tree(uid, uname)
+      
       pathUnits = path.split(/[\\\/]/)
       pathUnits.select! { |unit| !unit.empty? }
       fName = pathUnits.pop
       
-      dir = create_folder(uid, tree, pathUnits)
+      dir = create_folder(uid, tree, pathUnits)[0]
       if dir.find_file(false, fName, portionNum) == nil
         # For database
         file = Fileinfo.create(name: fName, folder: false, parent_id: dir.id,

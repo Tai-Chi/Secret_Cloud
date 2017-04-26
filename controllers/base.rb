@@ -4,7 +4,6 @@ require 'sinatra'
 class FileSystemSyncAPI < Sinatra::Base
   private
   @filesysList #<Array of Tree>
-  @duplicate   #<Boolean>
 
   public
   def initialize
@@ -15,6 +14,14 @@ class FileSystemSyncAPI < Sinatra::Base
   configure do
     enable :logging
     #Configuration.setup
+  end
+
+  def get_tree(uid, uname)
+    if @filesysList.at(uid) != nil
+      return @filesysList.at(uid)
+    else
+      return @filesysList[uid] = Tree.new(uid, uname)
+    end
   end
 
   def create_folder(uid, tree, pathUnits)
@@ -48,11 +55,11 @@ class FileSystemSyncAPI < Sinatra::Base
     end
     if state == :trace
       logger.info 'The folder/file having the same name has already existed.'
-      @duplicate = true
+      duplicate = true
     else
-      @duplicate = false
+      duplicate = false
     end
-    dir
+    return [dir, duplicate]
   end
 
   get '/?' do

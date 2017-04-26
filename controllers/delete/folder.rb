@@ -6,16 +6,11 @@ class FileSystemSyncAPI < Sinatra::Base
     begin
       request_body = JSON.parse(request.body.read)
       uname = request_body['username']
-      uid = Account.where(:name => uname).first.id
-
-      if @filesysList[uid] != nil
-        tree = @filesysList.at(uid)
-      else
-        tree = Tree.new(uid, uname)
-        @filesysList[uid] = tree
-      end
-
       path = request_body['path']
+
+      uid = Account.where(:name => uname).first.id
+      tree = get_tree(uid, uname)
+      
       pathUnits = path.split(/[\\\/]/)
       pathUnits.select! { |unit| !unit.empty? }
       pdir = (pathUnits.size <= 1) ? tree.root_dir : tree.find_file_by_unit(true, pathUnits[0..-2], 0)

@@ -5,24 +5,18 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/create/folder/?' do
     content_type 'application/json'
     begin
-      request.body.rewind
-      uname = JSON.parse(request.body.read)['username']
-      uid = Account.where(:name => uname).first.id
+      request_body = JSON.parse(request.body.read)
+      uname = request_body['username']
+      path = request_body['path']
 
-      if @filesysList[uid] != nil
-        tree = @filesysList.at(uid)
-      else
-        tree = Tree.new(uid, uname)
-        @filesysList[uid] = tree
-      end
+      uid = Account.where(:name => uname).first.id
+      tree = get_tree(uid, uname)
       
-      request.body.rewind
-      path = JSON.parse(request.body.read)['path']
       pathUnits = path.split(/[\\\/]/)
       pathUnits.select! { |unit| !unit.empty? }
-      create_folder(uid, tree, pathUnits)
+      duplicate = create_folder(uid, tree, pathUnits)[1]
 
-      if @duplicate == false
+      if duplicate == false
         status 200
       else
         status 403
