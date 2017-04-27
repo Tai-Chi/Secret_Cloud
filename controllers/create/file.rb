@@ -5,26 +5,16 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/create/file/?' do
     content_type 'application/json'
     begin
-      request_body = JSON.parse(request.body.read)
-      uname = request_body['username']
-      path = request_body['path']
-      portionNum = Integer(request_body['portion'])
-      
-      uid = Account.where(:name => uname).first.id
-      tree = get_tree(uid, uname)
-      
-      pathUnits = path.split(/[\\\/]/)
-      pathUnits.select! { |unit| !unit.empty? }
-      fName = pathUnits.pop
-      
-      dir = create_folder(uid, tree, pathUnits)[0]
-      if dir.find_file(false, fName, portionNum) == nil
+      username, path, portion = JsonParser.call(request, 'username', 'path', 'portion')
+      uid = GetAccountID.call(username)
+      pathUnits, fName = SplitPath.call(path, true)
+      dir = self.create_folder(uid, pathUnits)
+      if dir.find_file(fName, portion) == nil
         # For database
-        file = Fileinfo.create(name: fName, folder: false, parent_id: dir.id,
-        account_id: uid, portion: portionNum)
+        file = Fileinfo.create(name: fName, parent_id: dir.id, account_id: uid, portion: portion)
         # For our in-memory tree
         dir.add_file(file)
-        # Here we may also verify that all portions before portionNum
+        # Here we may also verify that all portions before portion(Num)
         # must exist as well. However, due to the difficulty, we have
         # not implemented this feature yet.
         logger.info "FILE CREATED SUCCESSFULLY"

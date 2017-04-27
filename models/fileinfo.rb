@@ -11,17 +11,18 @@ class Fileinfo < Sequel::Model
   one_to_many :children, :class=>self, :key=>:parent_id
 
   def add_file(file)
-    raise 'we can only add file into a folder.' unless folder
+    raise 'we can only add file into a folder.' unless self.portion==0
     raise 'file of course must be of type Fileinfo.' unless file.instance_of? Fileinfo
     @list ||= []
     @list.push(file)
   end
 
-  def find_file(dir, name, portion)
-    raise 'We can only find a file in a folder.' unless folder
+  # If we want to find a directory, then the portion number can be automatically zero.
+  def find_file(name, portion=0)
+    raise 'We can only find a file in a folder.' unless self.portion==0
     @list ||= children
     @list.each do |file|
-      return file if file.folder==dir && file.name==name && (dir||(file.portion==portion))
+      return file if file.name==name && file.portion==portion
     end
     return nil
   end
@@ -29,7 +30,7 @@ class Fileinfo < Sequel::Model
   def recur_delete
     @list ||= children
     @list.each do |file|
-      if file.folder
+      if file.portion==0
         file.recur_delete
       else
         file.delete
@@ -43,7 +44,7 @@ class Fileinfo < Sequel::Model
     @list ||= children
     rm_list = []
     @list.each do |file|
-      if !file.folder && file.name == fname
+      if !(file.portion==0) && file.name == fname
         file.delete
         rm_list.push(file)
       end
@@ -60,7 +61,7 @@ class Fileinfo < Sequel::Model
            id: id,
            attributes: {
              name: name,
-             folder: folder,
+            #  folder: folder,
              parent: parent_id,
              account: account_id,
              portion: portion,

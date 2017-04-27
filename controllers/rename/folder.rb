@@ -1,27 +1,20 @@
 require 'sinatra'
 
-# Class for route /create/folder
+# Class for route /rename/folder
 class FileSystemSyncAPI < Sinatra::Base
   post '/rename/folder/?' do
     content_type 'application/json'
     begin
-      request_body = JSON.parse(request.body.read)
-      uname = request_body['username']
-      name = request_body['new_name']
-      path = request_body['old_path']
-
-      uid = Account.where(:name => uname).first.id
-      tree = get_tree(uid, uname)
-
-      file = tree.find_file_by_path(true, path, 0)
-      if name == ""
+      username, old_path, new_name = JsonParser.call(request, 'username', 'old_path', 'new_name')
+      file = self.get_tree(GetAccountID.call(username)).find_file(old_path)
+      if new_name == ''
         logger.info 'New name should not be null!!'
         status 403
       elsif file == nil
         logger.info 'The specified folder is not valid!!'
         status 403
       else
-        file.name = name
+        file.name = new_name
         file.save # This line is very important !!!
         logger.info 'FOLDER RENAMED SUCCESSFULLY'
         status 200

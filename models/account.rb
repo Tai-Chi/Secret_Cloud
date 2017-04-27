@@ -10,9 +10,10 @@ class Account < Sequel::Model
            id: id,
            attributes: {
              name: name,
-             passwd: passwd
+            #  passwd: passwd
            }
          },
          options)
   end
+
 end

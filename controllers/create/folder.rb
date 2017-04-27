@@ -5,21 +5,14 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/create/folder/?' do
     content_type 'application/json'
     begin
-      request_body = JSON.parse(request.body.read)
-      uname = request_body['username']
-      path = request_body['path']
-
-      uid = Account.where(:name => uname).first.id
-      tree = get_tree(uid, uname)
-      
-      pathUnits = path.split(/[\\\/]/)
-      pathUnits.select! { |unit| !unit.empty? }
-      duplicate = create_folder(uid, tree, pathUnits)[1]
-
-      if duplicate == false
-        status 200
-      else
+      username, path = JsonParser.call(request, 'username', 'path')
+      # Check existing folder
+      if self.create_folder(GetAccountID.call(username), SplitPath.call(path), true)
+        logger.info 'The folder has already existed.'
         status 403
+      else
+        logger.info "FOLDER CREATED SUCCESSFULLY"
+        status 200
       end
     rescue => e
       logger.info "FAILED to create the new folder: #{inspect}"
