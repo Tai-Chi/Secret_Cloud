@@ -7,7 +7,7 @@ class FileSystemSyncAPI < Sinatra::Base
     begin
       username, path = JsonParser.call(request, 'username', 'path')
       # Check existing folder
-      if self.create_folder(GetAccountID.call(username), SplitPath.call(path), true)
+      if self.create_folder(GetAccountID.call(username), SplitPath.call(path))[1] == :trace
         logger.info 'The folder has already existed.'
         status 403
       else
@@ -15,7 +15,7 @@ class FileSystemSyncAPI < Sinatra::Base
         status 200
       end
     rescue => e
-      logger.info "FAILED to create the new folder: #{inspect}"
+      logger.info "FAILED to create the new folder: #{e.inspect}"
       status 400
     end
   end

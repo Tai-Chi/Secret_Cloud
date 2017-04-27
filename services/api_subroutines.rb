@@ -16,8 +16,7 @@ class FileSystemSyncAPI < Sinatra::Base
     end
   end
 
-  def create_folder(uid, pathUnits, checkDup=false)
-    fileExist = false
+  def create_folder(uid, pathUnits)
     state = :trace
     dir = self.get_tree(uid).root_dir.clone
     path = ['']
@@ -32,6 +31,9 @@ class FileSystemSyncAPI < Sinatra::Base
         elsif dir.find_file(fname, 1) != nil
           # A file having the same name blocks our route.
           # We should terminate our progress.
+          logger.info 'There is some file blocking our route.'
+          dir = nil
+          state = :blocked
           break
         end
       end
@@ -46,17 +48,7 @@ class FileSystemSyncAPI < Sinatra::Base
       end
     end
 
-    if state == :trace
-      logger.info 'The folder/file having the same name has already existed.'
-      duplicate = true
-    else
-      duplicate = false
-    end
-    
-    if checkDup
-      return duplicate
-    else
-      return dir
-    end
+    logger.info 'The folder/file having the same name has already existed.' if state == :trace
+    return [dir, state]
   end
 end

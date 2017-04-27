@@ -6,11 +6,6 @@ ENV['RACK_ENV'] ||= 'development'
 
 task default: [:spec]
 
-desc 'Tests API root route'
-task :api_spec => 'db:treset' do
-  sh 'ruby specs/api_spec.rb'
-end
-
 desc 'Run all the tests'
 Rake::TestTask.new(:spec) do |t|
   task :spec => 'db:treset'

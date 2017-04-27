@@ -34,7 +34,7 @@ class FileSystemSyncAPI < Sinatra::Base
         end
       end
     rescue => e
-      logger.info "FAILED to rename the file: #{inspect}"
+      logger.info "FAILED to rename the file: #{e.inspect}"
       status 400
     end
   end

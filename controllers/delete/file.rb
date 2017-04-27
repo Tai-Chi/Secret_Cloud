@@ -4,8 +4,8 @@ require 'sinatra'
 class FileSystemSyncAPI < Sinatra::Base
     post '/delete/file/?' do
     begin
-      uname, path = JsonParser.call(request, 'username', 'path')
-      tree = self.get_tree(GetAccountID.call(uname))
+      username, path = JsonParser.call(request, 'username', 'path')
+      tree = self.get_tree(GetAccountID.call(username))
       pathUnits, fname = SplitPath.call(path, true)
       pdir = (pathUnits.size <= 1) ? tree.root_dir : tree.find_file(pathUnits)
       if pdir == nil
@@ -21,7 +21,7 @@ class FileSystemSyncAPI < Sinatra::Base
         end
       end
     rescue => e
-      logger.info "FAILED to delete the folder: #{inspect}"
+      logger.info "FAILED to delete the file: #{e.inspect}"
       status 400
     end
   end

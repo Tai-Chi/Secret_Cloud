@@ -2,7 +2,7 @@ require 'json'
 require 'sequel'
 
 class Fileinfo < Sequel::Model
-  public
+  
   attr_reader :list #<Array of Fileinfo>
 
   many_to_one :account
@@ -10,17 +10,24 @@ class Fileinfo < Sequel::Model
   many_to_one :parent, :class=>self
   one_to_many :children, :class=>self, :key=>:parent_id
 
+  # override the original method
+  # it is similar to initialize of usual classes
+  def before_create
+    super
+    @list = []
+  end
+
   def add_file(file)
     raise 'we can only add file into a folder.' unless self.portion==0
     raise 'file of course must be of type Fileinfo.' unless file.instance_of? Fileinfo
-    @list ||= []
+    #@list ||= children
     @list.push(file)
   end
 
   # If we want to find a directory, then the portion number can be automatically zero.
   def find_file(name, portion=0)
     raise 'We can only find a file in a folder.' unless self.portion==0
-    @list ||= children
+    #@list ||= children
     @list.each do |file|
       return file if file.name==name && file.portion==portion
     end
@@ -28,7 +35,7 @@ class Fileinfo < Sequel::Model
   end
 
   def recur_delete
-    @list ||= children
+    # @list ||= children
     @list.each do |file|
       if file.portion==0
         file.recur_delete
@@ -41,7 +48,7 @@ class Fileinfo < Sequel::Model
   end
 
   def delete_file(fname)
-    @list ||= children
+    #@list ||= children
     rm_list = []
     @list.each do |file|
       if !(file.portion==0) && file.name == fname

@@ -24,7 +24,7 @@ class FileSystemSyncAPI < Sinatra::Base
       # Again, this feature is not necessary, so we can do
       # it later.
     rescue => e
-      logger.info "FAILED to rename the folder: #{inspect}"
+      logger.info "FAILED to rename the folder: #{e.inspect}"
       status 400
     end
   end
