@@ -17,6 +17,22 @@ class Fileinfo < Sequel::Model
     @list = []
   end
 
+  def name=(desc_plain)
+    self.name_secure = SecureDB.encrypt(desc_plain)
+  end
+
+  def name
+    SecureDB.decrypt(name_secure)
+  end
+
+  def gfid=(desc_plain)
+    self.gfid_secure = SecureDB.encrypt(desc_plain)
+  end
+
+  def gfid
+    SecureDB.decrypt(gfid_secure)
+  end
+
   def add_file(file)
     raise 'we can only add file into a folder.' unless self.portion==0
     raise 'file of course must be of type Fileinfo.' unless file.instance_of? Fileinfo
