@@ -4,6 +4,7 @@ GEM
     ast (2.3.0)
     bond (0.5.1)
     coderay (1.1.1)
+    econfig (2.0.0)
     ffi (1.9.18)
     formatador (0.2.5)
     guard (2.14.1)
@@ -95,6 +96,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  econfig
   guard
   guard-yield
   hirb

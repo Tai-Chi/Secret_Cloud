@@ -10,4 +10,3 @@ include Rack::Test::Methods
 def app
   FileSystemSyncAPI
 end
-

@@ -6,10 +6,10 @@ describe 'Testing file/folder resource routes' do
     Fileinfo.dataset.delete
     Account.dataset.delete
     Gaccount.dataset.delete
-    Account.insert(name: 'Dennis Hsieh', passwd: 'Hsieh Dennis')
-    Account.insert(name: 'Joey Hong', passwd: 'Hong Joey')
-    Account.insert(name: 'Alan Tsai', passwd: 'Tsai Alan')
-    Account.insert(name: 'Guest', passwd: 'guest')
+    CreateAccount.call(name: 'Dennis Hsieh', passwd: 'Hsieh Dennis')
+    CreateAccount.call(name: 'Joey Hong', passwd: 'Hong Joey')
+    CreateAccount.call(name: 'Alan Tsai', passwd: 'Tsai Alan')
+    CreateAccount.call(name: 'Guest', passwd: 'guest')
   end
 
   describe 'Creating new folders' do
