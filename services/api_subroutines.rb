@@ -40,7 +40,7 @@ class FileSystemSyncAPI < Sinatra::Base
       state = :add if state==:trace && tmp==nil
       if state == :add
         # For database
-        file = Fileinfo.create(name: fname, parent_id: pid, account_id: uid, portion: 0)
+        file = CreateFileinfo.call(name: fname, parent_id: pid, account_id: uid, portion: 0)
         logger.info "NEW FOLDER CREATED: #{path.join('/')}"
         # For our in-memory tree
         dir.add_file(file)

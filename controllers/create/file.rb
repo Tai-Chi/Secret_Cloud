@@ -21,7 +21,7 @@ class FileSystemSyncAPI < Sinatra::Base
           status 403
         elsif dir.find_file(fName, portion) == nil
           # For database
-          file = Fileinfo.create(name: fName, parent_id: dir.id, account_id: uid, portion: portion)
+          file = CreateFileinfo.call(name: fName, parent_id: dir.id, account_id: uid, portion: portion)
           # For our in-memory tree
           dir.add_file(file)
           # Here we may also verify that all portions before portion(Num)

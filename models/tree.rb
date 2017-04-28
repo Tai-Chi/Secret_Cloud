@@ -21,7 +21,7 @@ class Tree
       end
     end
     if ftable.empty?
-      @root_dir = Fileinfo.create(name: 'ROOT', account_id: uid, portion: 0)
+      @root_dir = CreateFileinfo.call(name: 'ROOT', account_id: uid, portion: 0)
       @root_dir.parent_id = @root_dir.id
       @root_dir.save
       # fList[@root_dir.id] = @root_dir
