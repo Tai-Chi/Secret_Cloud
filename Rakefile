@@ -18,6 +18,13 @@ task rubo: [:spec] do
   sh 'rubocop app.rb models/*.rb'
 end
 
+namespace :crypto do
+  desc 'Create sample cryptographic key for database'
+  task :db_key do
+    puts "DB_KEY: #{SecureDB.generate_key}"
+  end
+end
+
 namespace :db do
   require 'sequel'
   Sequel.extension :migration
