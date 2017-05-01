@@ -9,7 +9,7 @@ gem 'sinatra'
 gem 'hirb'
 gem 'rake'
 gem 'tux'
-
+gem 'sequel-seed'
 gem 'rbnacl-libsodium'
 
 group :development do
