@@ -5,7 +5,8 @@ Sequel.migration do
     create_table(:gaccounts) do
       primary_key :id
       String :name_secure, null: false, text: true
-      String :passwd, null: false
+      String :passwd_hash, null: false, text: true
+      String :salt, null: false
       Integer :size
     end
   end
