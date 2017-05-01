@@ -43,7 +43,7 @@ class Tree
     dir = @root_dir
     pathUnits.each_with_index do |fname, index|
       if dir != nil
-        if (index<pathUnits.size) || (portion==0)
+        if (index<pathUnits.size-1) || (portion==0)
           dir = dir.find_file(fname) # folder
         else
           dir = dir.find_file(fname, portion) # file
