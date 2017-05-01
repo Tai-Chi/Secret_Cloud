@@ -10,7 +10,7 @@ class FileSystemSyncAPI < Sinatra::Base
       if account == nil
         logger.info 'Such account does not exist!'
         status 403
-      elsif account.passwd != passwd
+      elsif !account.passwd? passwd
         logger.info 'Password verification failed!'
         status 403
       else

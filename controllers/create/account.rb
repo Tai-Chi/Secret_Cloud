@@ -13,7 +13,7 @@ class FileSystemSyncAPI < Sinatra::Base
         logger.info 'The account has been created before.'
         status 403
       else
-        Account.create(name: username, passwd: passwd)
+        CreateAccount.call(name: username, passwd: passwd)
         logger.info "ACCOUNT CREATED SUCCESSFULLY"
         status 200
       end
