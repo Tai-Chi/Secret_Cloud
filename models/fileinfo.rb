@@ -43,6 +43,7 @@ class Fileinfo < Sequel::Model
   # If we want to find a directory, then the portion number can be automatically zero.
   def find_file(name, portion=0)
     raise 'We can only find a file in a folder.' unless self.portion==0
+    portion = Integer(portion) if portion.instance_of? String
     #@list ||= children
     @list.each do |file|
       return file if file.name==name && file.portion==portion

@@ -38,6 +38,7 @@ class Tree
   # The input argument pathUnits can be of String type or of Array type.
   def find_file(pathUnits, portion=0)
     pathUnits = SplitPath.call(pathUnits) if pathUnits.instance_of? String
+    portion = Integer(portion) if portion.instance_of? String
     raise 'The path must be nonempty.' unless pathUnits.size > 0
     dir = @root_dir
     pathUnits.each_with_index do |fname, index|
