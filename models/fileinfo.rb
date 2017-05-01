@@ -1,8 +1,11 @@
 require 'json'
 require 'sequel'
 
+#Make all model subclasses support the after_initialize hook
+Sequel::Model.plugin :after_initialize
+
 class Fileinfo < Sequel::Model
-  
+
   attr_reader :list #<Array of Fileinfo>
 
   many_to_one :account
@@ -10,12 +13,11 @@ class Fileinfo < Sequel::Model
   many_to_one :parent, :class=>self
   one_to_many :children, :class=>self, :key=>:parent_id
 
-  # override the original method
-  # it is similar to initialize of usual classes
-  def before_create
-    super
+  ### invoke right after the original constrctor
+  def after_initialize
     @list = []
   end
+  ##############################################
 
   def name=(desc_plain)
     self.name_secure = SecureDB.encrypt(desc_plain)
