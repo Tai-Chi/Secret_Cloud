@@ -78,7 +78,7 @@ class Fileinfo < Sequel::Model
     rm_list.each do |file|
       @list.delete(file)
     end
-    rm_list.size != 0
+    return rm_list.map { |file| file.gfid }
   end
 
   def to_json(options = {})

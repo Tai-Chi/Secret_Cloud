@@ -14,8 +14,11 @@ class FileSystemSyncAPI < Sinatra::Base
         logger.info 'The specified file does not exist!!'
         status 403
       else
-        if pdir.delete_file(fname)
+        id_list = pdir.delete_file(fname)
+        if id_list.size > 0
           logger.info 'DELETE FILE SUCCESSFULLY'
+          logger.info "DELETED GFID(s): #{id_list.join(' ')}"
+          body id_list.join(' ')
           status 200
         else
           logger.info 'The specified file does not exist!!'
