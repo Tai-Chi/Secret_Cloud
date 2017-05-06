@@ -6,6 +6,9 @@ class FileSystemSyncAPI < Sinatra::Base
     content_type 'application/json'
     begin
       username, old_path, new_name = JsonParser.call(request, 'username', 'old_path', 'new_name')
+      username = String.try_convert(username)
+      old_path = String.try_convert(old_path)
+      new_name = String.try_convert(new_name)
       pathUnits, old_name = SplitPath.call(old_path, true)
       dir = self.get_tree(GetAccountID.call(username)).find_file(pathUnits)
       if dir == nil

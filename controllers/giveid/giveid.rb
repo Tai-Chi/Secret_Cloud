@@ -6,6 +6,10 @@ class FileSystemSyncAPI < Sinatra::Base
     content_type 'application/json'
     begin
       username, path, portion, new_id = JsonParser.call(request, 'username', 'path', 'portion', 'new_id')
+      username = String.try_convert(username)
+      path = String.try_convert(path)
+      portion = Integer(portion)
+      new_id = String.try_convert(new_id)
       if portion == nil || new_id == nil
         logger.info "Portion or Gfid cannot be null."
         status 403

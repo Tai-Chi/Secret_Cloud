@@ -11,6 +11,7 @@ Sequel.migration do
       Integer :portion
       foreign_key :gaccount_id, :gaccounts
       String :gfid_secure, text: true
+      Integer :size
     end
   end
 end

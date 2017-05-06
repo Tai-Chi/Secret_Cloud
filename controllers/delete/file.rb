@@ -5,6 +5,8 @@ class FileSystemSyncAPI < Sinatra::Base
     post '/delete/file/?' do
     begin
       username, path = JsonParser.call(request, 'username', 'path')
+      username = String.try_convert(username)
+      path = String.try_convert(path)
       tree = self.get_tree(GetAccountID.call(username))
       pathUnits, fname = SplitPath.call(path, true)
       pdir = (pathUnits.size <= 1) ? tree.root_dir : tree.find_file(pathUnits)

@@ -6,6 +6,8 @@ class FileSystemSyncAPI < Sinatra::Base
     content_type 'application/json'
     begin
       username, path = JsonParser.call(request, 'username', 'path')
+      username = String.try_convert(username)
+      path = String.try_convert(path)
       file = self.get_tree(GetAccountID.call(username)).find_file(path, 1)
       # Please note that we now assume all files have only
       # one portion. We must extend this feature to multi-portion

@@ -6,6 +6,9 @@ class FileSystemSyncAPI < Sinatra::Base
     content_type 'application/json'
     begin
       username, path = JsonParser.call(request, 'username', 'path')
+      # Type checking
+      username = String.try_convert(username)
+      path = String.try_convert(path)
       # Check existing folder
       if self.create_folder(GetAccountID.call(username), SplitPath.call(path))[1] == :trace
         logger.info 'The folder has already existed.'
