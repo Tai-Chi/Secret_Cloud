@@ -6,9 +6,9 @@ class FileSystemSyncAPI < Sinatra::Base
     content_type 'application/json'
     begin
       username, old_path, new_name = JsonParser.call(request, 'username', 'old_path', 'new_name')
-      username = String.try_convert(username)
-      old_path = String.try_convert(old_path)
-      new_name = String.try_convert(new_name)
+      username = username.to_s
+      old_path = old_path.to_s
+      new_name = new_name.to_s
       file = self.get_tree(GetAccountID.call(username)).find_file(old_path)
       if new_name == ''
         logger.info 'New name should not be null!!'

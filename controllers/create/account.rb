@@ -6,8 +6,8 @@ class FileSystemSyncAPI < Sinatra::Base
     content_type 'application/json'
     begin
       username, passwd = JsonParser.call(request, 'username', 'passwd')
-      username = String.try_convert(username)
-      passwd = String.try_convert(passwd)
+      username = username.to_s
+      passwd = passwd.to_s
       if( username==nil || passwd==nil )
         logger.info 'Both username and password must be nonempty.'
         status 403

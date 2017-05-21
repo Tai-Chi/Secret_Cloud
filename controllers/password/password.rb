@@ -6,9 +6,9 @@ class FileSystemSyncAPI < Sinatra::Base
     content_type 'application/json'
     begin
       username, old_passwd, new_passwd = JsonParser.call(request, 'username', 'old_passwd', 'new_passwd')
-      username = String.try_convert(username)
-      old_passwd = String.try_convert(old_passwd)
-      new_passwd = String.try_convert(new_passwd)
+      username = username.to_s
+      old_passwd = old_passwd.to_s
+      new_passwd = new_passwd.to_s
       account = Account[name: username]
       if account == nil
         logger.info 'Such account does not exist!'
