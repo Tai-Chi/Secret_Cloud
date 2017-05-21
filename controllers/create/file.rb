@@ -5,16 +5,16 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/create/file/?' do
     content_type 'application/json'
     begin
-      username, path, portion, gfid, size = JsonParser.call(request, 'username', 'path', 'portion', 'gfid', 'size')
-      if username==nil || path==nil || portion==nil || gfid==nil || size==nil
+      username, path, portion, size = JsonParser.call(request, 'username', 'path', 'portion', 'size')
+      if username==nil || path==nil || portion==nil || size==nil
         logger.info "Any parameter cannot be null."
         status 403
       else
         # Type checking
-        username = String.try_convert(username)
-        path = String.try_convert(path)
+        username = username.to_s
+        path = path.to_s
         portion = Integer(portion)
-        gfid = String.try_convert(gfid)
+        # gfid = gfid.to_s
         size = Integer(size)
 
         # Body
@@ -28,10 +28,15 @@ class FileSystemSyncAPI < Sinatra::Base
           logger.info "The path is not valid."
           status 403
         elsif dir.find_file(fName, portion) == nil
+          # Find available google drive for this file
+          gaccount = AllocateDriveSpace.call(size)
+          halt 403, 'There is no available drive!!' if gaccount == nil
           # For database
-          file = CreateFileinfo.call(name: fName, parent_id: dir.id, account_id: uid, portion: portion, gfid: gfid, size: size)
+          file = CreateFileinfo.call(name: fName, parent_id: dir.id, account_id: uid, portion: portion, gaccount_id: gaccount[:id], size: size)
           # For our in-memory tree
           dir.add_file(file)
+          # Return fileinfo id and assigned gaccount
+          body file.id.to_s + ' ' + gaccount.name
           # Here we may also verify that all portions before portion(Num)
           # must exist as well. However, due to the difficulty, we have
           # not implemented this feature yet.

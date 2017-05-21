@@ -53,4 +53,18 @@ class Tree
     return dir
   end
 
+  # Note that everyone can only access Fileinfo database through this interface.
+  # Otherwise the files in our tree may not be synced with those in the database.
+  # This concept is very important and may cause lots of bugs if we are careless!!
+  def get_file_instance(id)
+    raise 'The primary key must be an integer.' unless id.instance_of? Integer
+    name_list = []
+    while true
+      file = Fileinfo[id] 
+      break if id == file.parent_id
+      name_list.push(file.name)
+      id = file.parent_id
+    end
+    find_file(name_list.reverse, 1)
+  end
 end

@@ -69,7 +69,7 @@ end
 
 namespace :db do
   task :reset_seeds do
-    tables = [ :schema_info, :schema_seeds, :accounts, :fileinfos, :gaccounts]
+    tables = [ :schema_seeds, :fileinfos, :accounts, :gaccounts]
     tables.each { |table| DB[table].delete }
   end
   desc 'Seeds the development database'
@@ -85,4 +85,4 @@ namespace :db do
 
   desc 'Perform rollback, migration, and reseed'
   task reset: [:rollback, :migrate, :reseed]
- end
+end

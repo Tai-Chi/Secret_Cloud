@@ -5,8 +5,8 @@ class FileSystemSyncAPI < Sinatra::Base
     post '/delete/file/?' do
     begin
       username, path = JsonParser.call(request, 'username', 'path')
-      username = String.try_convert(username)
-      path = String.try_convert(path)
+      username = username.to_s
+      path = path.to_s
       tree = self.get_tree(GetAccountID.call(username))
       pathUnits, fname = SplitPath.call(path, true)
       pdir = (pathUnits.size <= 1) ? tree.root_dir : tree.find_file(pathUnits)
@@ -14,11 +14,11 @@ class FileSystemSyncAPI < Sinatra::Base
         logger.info 'The specified file does not exist!!'
         status 403
       else
-        id_list = pdir.delete_file(fname)
-        if id_list.size > 0
+        gaccount_gfid_list = pdir.delete_file(fname)
+        if gaccount_gfid_list.size > 0
           logger.info 'DELETE FILE SUCCESSFULLY'
-          logger.info "DELETED GFID(s): #{id_list.join(' ')}"
-          body id_list.join(' ')
+          logger.info "DELETED Gaccounts/Gfid(s): #{gaccount_gfid_list.join(' ')}"
+          body gaccount_gfid_list.join(' ')
           status 200
         else
           logger.info 'The specified file does not exist!!'
