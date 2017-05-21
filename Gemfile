@@ -11,6 +11,7 @@ gem 'rake'
 gem 'tux'
 
 gem 'econfig'
+gem 'sequel-seed'
 gem 'rbnacl-libsodium'
 
 group :development do
