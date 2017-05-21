@@ -55,8 +55,8 @@ namespace :db do
   task :treset do
     system 'RACK_ENV=test rake db:reset'
   end
-  task reset: [:rollback, :migrate]
-
+  #task reset: [:rollback, :migrate]
+=begin
   desc 'Self-built database'
   task :tselfbuild do
     system "RACK_ENV=test rake db:selfbuild"
@@ -64,5 +64,25 @@ namespace :db do
   task :selfbuild => [:reset] do
     User.insert(name: 'Alan', passwd: 'Alan')
   end
-
+=end
 end
+
+namespace :db do
+  task :reset_seeds do
+    tables = [ :schema_info, :schema_seeds, :accounts, :fileinfos, :gaccounts]
+    tables.each { |table| DB[table].delete }
+  end
+  desc 'Seeds the development database'
+  task :seed do
+    require 'sequel'
+    require 'sequel/extensions/seed'
+    Sequel::Seed.setup(:development)
+    Sequel.extension :seed
+    Sequel::Seeder.apply(DB, 'db/seeds')
+  end
+  desc 'Delete all data and reseed'
+  task reseed: [:reset_seeds, :seed]
+
+  desc 'Perform rollback, migration, and reseed'
+  task reset: [:rollback, :migrate, :reseed]
+ end
