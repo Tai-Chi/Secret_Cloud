@@ -6,10 +6,10 @@ describe 'Testing file/folder resource routes' do
     Fileinfo.dataset.delete
     Account.dataset.delete
     Gaccount.dataset.delete
-    CreateAccount.call(name: 'Dennis Hsieh', passwd: 'Hsieh Dennis')
-    CreateAccount.call(name: 'Joey Hong', passwd: 'Hong Joey')
-    CreateAccount.call(name: 'Alan Tsai', passwd: 'Tsai Alan')
-    CreateAccount.call(name: 'Guest', passwd: 'guest')
+    CreateAccount.call(name: 'Dennis Hsieh', email: 'denny0530@gmail.com', passwd: 'Hsieh Dennis')
+    CreateAccount.call(name: 'Joey Hong', email: 'joypad.y.t.h@gmail.com', passwd: 'Hong Joey')
+    CreateAccount.call(name: 'Alan Tsai', email: 'abc@xyz.com', passwd: 'Tsai Alan')
+    CreateAccount.call(name: 'Guest', email: 'alan23273850@gmail.com', passwd: 'guest')
     CreateGaccount.call(name: 'secret.cloud.0001', passwd: 'idontwanttoletyouknow', size: 15000000000)
     CreateGaccount.call(name: 'secret.cloud.0002', passwd: 'idontwanttoletyouknow', size: 15000000000)
   end
