@@ -50,13 +50,13 @@ namespace :db do
     puts "Rolling back database to #{target}"
     Sequel::Migrator.run(DB, 'db/migrations', target: target)
   end
-
+=begin
   desc 'Perform migration reset (full rollback and migration)'
   task :treset do
     system 'RACK_ENV=test rake db:reset'
   end
-  #task reset: [:rollback, :migrate]
-=begin
+  task reset: [:rollback, :migrate]
+
   desc 'Self-built database'
   task :tselfbuild do
     system "RACK_ENV=test rake db:selfbuild"
@@ -68,11 +68,21 @@ namespace :db do
 end
 
 namespace :db do
+  task :treset_seeds do
+    system 'RACK_ENV=test rake db:reset_seeds'
+  end
   task :reset_seeds do
     tables = [ :schema_seeds, :fileinfos, :accounts, :gaccounts]
-    tables.each { |table| DB[table].delete }
+    tables.each { |table| DB[table].delete if DB.table_exists?(table) }
   end
   desc 'Seeds the development database'
+  task :tseed do
+    require 'sequel'
+    require 'sequel/extensions/seed'
+    Sequel::Seed.setup(:test)
+    Sequel.extension :seed
+    Sequel::Seeder.apply(DB, 'db/seeds')
+  end
   task :seed do
     require 'sequel'
     require 'sequel/extensions/seed'
@@ -81,8 +91,10 @@ namespace :db do
     Sequel::Seeder.apply(DB, 'db/seeds')
   end
   desc 'Delete all data and reseed'
+  task treseed: [:treset_seeds, :tseed]
   task reseed: [:reset_seeds, :seed]
 
   desc 'Perform rollback, migration, and reseed'
+  task treset: [:trollback, :tmigrate, :treseed]
   task reset: [:rollback, :migrate, :reseed]
 end

@@ -10,6 +10,8 @@ describe 'Testing file/folder resource routes' do
     CreateAccount.call(name: 'Joey Hong', passwd: 'Hong Joey')
     CreateAccount.call(name: 'Alan Tsai', passwd: 'Tsai Alan')
     CreateAccount.call(name: 'Guest', passwd: 'guest')
+    CreateGaccount.call(name: 'secret.cloud.0001', passwd: 'idontwanttoletyouknow', size: 15000000000)
+    CreateGaccount.call(name: 'secret.cloud.0002', passwd: 'idontwanttoletyouknow', size: 15000000000)
   end
 
   describe 'Creating new folders' do
@@ -47,29 +49,29 @@ describe 'Testing file/folder resource routes' do
   describe 'Creating new files' do
     it 'should successfully create files for all users' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
     end
 
     it 'SAD: should not create a file whose name has been owned by other files' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 403
@@ -77,9 +79,9 @@ describe 'Testing file/folder resource routes' do
 
     it 'SAD: should check the correctness of the path' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 403
     end
@@ -89,13 +91,13 @@ describe 'Testing file/folder resource routes' do
     it 'should successfully rename folders for all users' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
       # Create files first!
-      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
       # Then rename!
@@ -112,7 +114,7 @@ describe 'Testing file/folder resource routes' do
 
     it 'SAD: should not rename a file here' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
       req_body = { username: 'Guest', old_path: '/home/Guest/test.txt', new_name: 'test.txt' }.to_json
@@ -122,7 +124,7 @@ describe 'Testing file/folder resource routes' do
 
     it 'SAD: should not rename a non-existing folder' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       req_body = { username: 'Guest', old_path: '/home/Guest/haha/', new_name: 'HAHA'}.to_json
       post '/rename/folder', req_body, req_header
@@ -137,22 +139,22 @@ describe 'Testing file/folder resource routes' do
     it 'should successfully rename files for all users' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
       # Create files first!
-      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Dennis Hsieh', path: '/home/Dennis/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Joey Hong', path: '/home/Joey/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Alan Tsai', path: '/home/Alan/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
       # Then rename!
@@ -169,10 +171,10 @@ describe 'Testing file/folder resource routes' do
 
     it 'SAD: should not rename a folder here' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
       req_body = { username: 'Guest', old_path: '/home/Guest/', new_name: 'guest' }.to_json
@@ -182,7 +184,7 @@ describe 'Testing file/folder resource routes' do
 
     it 'SAD: should not rename a non-existing file' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       req_body = { username: 'Guest', old_path: '/home/Guest/haha/test.txt', new_name: 'HAHA.txt'}.to_json
       post '/rename/file', req_body, req_header
@@ -206,10 +208,10 @@ describe 'Testing file/folder resource routes' do
       req_body = { username: 'Guest', path: '/home/Guest/a/b/c' }.to_json
       post '/create/folder', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/a/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/a/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/a/b/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/a/b/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
       req_body = { username: 'Guest', path: '/home/Guest/a' }.to_json
@@ -218,20 +220,20 @@ describe 'Testing file/folder resource routes' do
       req_body = { username: 'Guest', path: '/home/Guest/a/b/c' }.to_json
       post '/create/folder', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/a/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/a/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/a/b/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/a/b/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
     end
 
     it 'SAD: should not delete a file here' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/delete/folder', req_body, req_header
       _(last_response.status).must_equal 403
     end
@@ -250,19 +252,19 @@ describe 'Testing file/folder resource routes' do
   describe 'Deleting files' do
     it 'HAPPY: should delete the file' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
       req_body = { username: 'Guest', path: '/home/Guest/test.txt' }.to_json
       post '/delete/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 2, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 2, size: 50 }.to_json
       post '/create/file', req_body, req_header
       _(last_response.status).must_equal 200
     end
@@ -279,7 +281,7 @@ describe 'Testing file/folder resource routes' do
 
     it 'SAD: should not delete a non-existing file' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, gfid: 1, size: 50 }.to_json
+      req_body = { username: 'Guest', path: '/home/Guest/test.txt', portion: 1, size: 50 }.to_json
       post '/create/file', req_body, req_header
       req_body = { username: 'Guest', path: '/home/Guest/haha/test.txt' }.to_json
       post '/delete/file', req_body, req_header
