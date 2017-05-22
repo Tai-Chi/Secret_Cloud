@@ -5,17 +5,18 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/create/account/?' do
     content_type 'application/json'
     begin
-      username, passwd = JsonParser.call(request, 'username', 'passwd')
+      username, email, passwd = JsonParser.call(request, 'username', 'email', 'passwd')
       username = username.to_s
+      email = email.to_s
       passwd = passwd.to_s
-      if( username==nil || passwd==nil )
-        logger.info 'Both username and password must be nonempty.'
+      if( username==nil || email==nil || passwd==nil )
+        logger.info 'username and email and password must be nonempty.'
         status 403
       elsif Account[name: username] != nil
         logger.info 'The account has been created before.'
         status 403
       else
-        CreateAccount.call(name: username, passwd: passwd)
+        CreateAccount.call(name: username, email: email, passwd: passwd)
         logger.info "ACCOUNT CREATED SUCCESSFULLY"
         status 200
       end
