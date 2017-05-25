@@ -10,7 +10,7 @@ class FileSystemSyncAPI < Sinatra::Base
       old_path = old_path.to_s
       new_name = new_name.to_s
       pathUnits, old_name = SplitPath.call(old_path, true)
-      dir = self.get_tree(GetAccountID.call(username)).find_file(pathUnits)
+      dir = self.get_tree(username).find_file(pathUnits)
       if dir == nil
         logger.info 'The specified file does not exist!!'
         status 403
