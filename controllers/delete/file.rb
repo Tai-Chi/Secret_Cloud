@@ -7,7 +7,7 @@ class FileSystemSyncAPI < Sinatra::Base
       username, path = JsonParser.call(request, 'username', 'path')
       username = username.to_s
       path = path.to_s
-      tree = self.get_tree(GetAccountID.call(username))
+      tree = self.get_tree(username)
       pathUnits, fname = SplitPath.call(path, true)
       pdir = (pathUnits.size <= 1) ? tree.root_dir : tree.find_file(pathUnits)
       if pdir == nil

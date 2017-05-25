@@ -18,7 +18,7 @@ class FileSystemSyncAPI < Sinatra::Base
 
         # Body
         # We must get the file model instance from our tree, or the tree will be outdated.
-        file = self.get_tree(GetAccountID.call(username)).get_file_instance(file_id)
+        file = self.get_tree(username).get_file_instance(file_id)
         halt 403, 'The file does not exist!!' if file == nil
         file.gfid = gfile_id
         file.save

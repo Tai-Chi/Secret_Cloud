@@ -16,7 +16,7 @@ class FileSystemSyncAPI < Sinatra::Base
         logger.info 'Password verification failed!'
         status 403
       else
-        self.get_tree(GetAccountID.call(username)).root_dir.recur_delete
+        self.get_tree(username).root_dir.recur_delete
         account.delete
         logger.info "ACCOUNT DELETED SUCCESSFULLY"
         status 200

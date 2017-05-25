@@ -9,7 +9,7 @@ class FileSystemSyncAPI < Sinatra::Base
       username = username.to_s
       old_path = old_path.to_s
       new_name = new_name.to_s
-      file = self.get_tree(GetAccountID.call(username)).find_file(old_path)
+      file = self.get_tree(username).find_file(old_path)
       if new_name == ''
         logger.info 'New name should not be null!!'
         status 403
