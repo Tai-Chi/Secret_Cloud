@@ -5,6 +5,12 @@ class JsonParser
     args.each do |item|
       list.push(request_body[item])
     end
-    return list
+    if list.size() <= 0
+      return nil
+    elsif list.size() == 1
+      return list[0]
+    else
+      return list
+    end
   end
 end

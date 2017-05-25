@@ -9,7 +9,10 @@ class FileSystemSyncAPI < Sinatra::Base
   end
 
   def get_tree(uid)
-    if @filesysList.at(uid) != nil
+    uid = GetAccountID.call(uid) if uid.instance_of? String
+    if uid == nil
+      return nil
+    elsif @filesysList.at(uid) != nil
       return @filesysList.at(uid)
     else
       return @filesysList[uid] = Tree.new(uid)
