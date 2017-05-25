@@ -3,11 +3,12 @@ require 'sequel'
 class Tree
   public
   attr_reader :root_dir #<Fileinfo>
-  #attr_reader :fList #<Array of Fileinfo>
+  attr_reader :dl_queue #<Download Queue>
 
   # Specify someone's file system
   # How to recover the whole tree from the sql table?
   def initialize(uid)
+    @dl_queue = Queue.new
     fList = []
     ftable = Account[uid].fileinfos
     ftable.each do |file|
