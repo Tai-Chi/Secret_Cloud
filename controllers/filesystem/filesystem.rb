@@ -19,7 +19,11 @@ class FileSystemSyncAPI < Sinatra::Base
   end
 
   post '/filesystem/?' do
-    content_type 'application/json'
+    # Here we have to specify charset to tell the
+    # "website" that the body content is in UTF-8
+    # encoding!! Note if we call this route with
+    # httpie, this specification is not required.
+    content_type 'application/json; charset=utf-8'
     begin
       username = JsonParser.call(request, 'username')
       halt 403, 'Username cannot be null!!' if username == nil

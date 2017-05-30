@@ -31,7 +31,10 @@ class SecureDB
     return nil unless ciphertext64
     ciphertext = Base64.strict_decode64(ciphertext64)
     simple_box = RbNaCl::SimpleBox.from_secret_key(key)
-    simple_box.decrypt(ciphertext)
+    simple_box.decrypt(ciphertext).force_encoding('UTF-8')
+    # For an unknown reason, the decrypted result is default
+    # to be of 'ASCII-8BIT', so we have to transform it into
+    # UTF-8 by ourself!!
   end
 
   def self.new_salt
