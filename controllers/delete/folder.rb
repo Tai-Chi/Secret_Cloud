@@ -7,7 +7,7 @@ class FileSystemSyncAPI < Sinatra::Base
       username, path = JsonParser.call(request, 'username', 'path')
       username = username.to_s
       path = path.to_s
-      tree = self.get_tree(GetAccountID.call(username))
+      tree = self.get_tree(username)
       pathUnits = SplitPath.call(path)
       pdir = (pathUnits.size <= 1) ? tree.root_dir : tree.find_file(pathUnits[0..-2])
       dir = tree.find_file(pathUnits)
@@ -15,12 +15,11 @@ class FileSystemSyncAPI < Sinatra::Base
         logger.info 'The specified folder does not exist!!'
         status 403
       else
-        id_list = dir.recur_delete
+        gaccount_gfid_list = dir.recur_delete
         pdir.list.delete(dir)
-        id_list += dir.gfid
         logger.info 'DELETE FOLDER SUCCESSFULLY'
-        logger.info "DELETED GFID(s): #{id_list.join(' ')}"
-        body id_list.join("\n")
+        logger.info "DELETED Gaccounts/Gfid(s): #{gaccount_gfid_list.join(' ')}"
+        body gaccount_gfid_list.join("\n")
         status 200
       end
     rescue => e
