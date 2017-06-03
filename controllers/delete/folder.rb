@@ -15,9 +15,12 @@ class FileSystemSyncAPI < Sinatra::Base
         logger.info 'The specified folder does not exist!!'
         status 403
       else
-        dir.recur_delete
+        id_list = dir.recur_delete
         pdir.list.delete(dir)
+        id_list += dir.gfid
         logger.info 'DELETE FOLDER SUCCESSFULLY'
+        logger.info "DELETED GFID(s): #{id_list.join(' ')}"
+        body id_list.join("\n")
         status 200
       end
     rescue => e

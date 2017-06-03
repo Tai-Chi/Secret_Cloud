@@ -55,15 +55,18 @@ class Fileinfo < Sequel::Model
 
   def recur_delete
     # @list ||= children
+    rm_list = []
     @list.each do |file|
       if file.portion==0
-        file.recur_delete
+        rm_list += file.recur_delete
       else
         file.delete
+        rm_list += file.gfid
       end
     end
     @list = []
     self.delete
+    rm_list
   end
 
   def delete_file(fname)
@@ -78,7 +81,7 @@ class Fileinfo < Sequel::Model
     rm_list.each do |file|
       @list.delete(file)
     end
-    rm_list.size != 0
+    return rm_list.map { |file| file.gfid }
   end
 
   def to_json(options = {})
