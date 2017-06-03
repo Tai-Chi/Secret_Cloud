@@ -79,14 +79,14 @@ class Fileinfo < Sequel::Model
       if !(file.portion==0) && file.name == fname
         file.delete
         rm_list.push(file)
-        # Preadd the resumed space to the google drive.
-        # Although this is not the best practice, due to
-        # the fact that there may be some unintentional
-        # disconnection before calling Drive API, we have
-        # no better idea for now temporarily.
-        gaccount = Gaccount[file.gaccount_id]
-        gaccount.size += file.size
-        gaccount.save
+        # We should always keep the recorded space
+        # in our server no more than the real space
+        # of the Google Drive, so we update the space
+        # through another API, instead of adding
+        # here directly.
+        # gaccount = Gaccount[file.gaccount_id]
+        # gaccount.size += file.size
+        # gaccount.save
       end
     end
     rm_list.each do |file|

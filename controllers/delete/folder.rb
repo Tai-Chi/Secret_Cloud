@@ -16,11 +16,16 @@ class FileSystemSyncAPI < Sinatra::Base
         status 403
       else
         gaccount_gfid_list = dir.recur_delete
-        pdir.list.delete(dir)
-        logger.info 'DELETE FOLDER SUCCESSFULLY'
-        logger.info "DELETED Gaccounts/Gfid(s): #{gaccount_gfid_list.join(' ')}"
-        body gaccount_gfid_list.join("\n")
-        status 200
+        if gaccount_gfid_list == nil || gaccount_gfid_list.size <= 0
+          logger.info 'The folder is empty!!'
+          status 403
+        else
+          pdir.list.delete(dir)
+          logger.info 'DELETE FOLDER SUCCESSFULLY'
+          logger.info "DELETED Gaccounts/Gfid(s): #{gaccount_gfid_list.join(' ')}"
+          body gaccount_gfid_list.join("\n")
+          status 200
+        end
       end
     rescue => e
       logger.info "FAILED to delete the folder: #{e.inspect}"
