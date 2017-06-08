@@ -12,6 +12,7 @@ Sequel.migration do
       foreign_key :gaccount_id, :gaccounts
       String :gfid_secure, text: true
       Integer :size
+      DateTime :time
     end
   end
 end
