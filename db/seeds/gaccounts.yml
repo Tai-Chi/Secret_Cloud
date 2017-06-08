@@ -1,7 +1,7 @@
 ---
 - :name: secret.cloud.0001
-  :passwd: secret_cloud_0001
   :size: 15000000000
+  :account_id: 1
 - :name: secret.cloud.0002
-  :passwd: secret_cloud_0002
   :size: 15000000000
+  :account_id: 2
