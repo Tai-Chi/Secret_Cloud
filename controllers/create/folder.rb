@@ -5,12 +5,13 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/create/folder/?' do
     content_type 'application/json'
     begin
-      username, path = JsonParser.call(request, 'username', 'path')
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      path = JsonParser.call(request, 'path')
       # Type checking
-      username = username.to_s
       path = path.to_s
       # Check existing folder
-      if self.create_folder(GetAccountID.call(username), SplitPath.call(path))[1] == :trace
+      if self.create_folder(account.id, SplitPath.call(path))[1] == :trace
         logger.info 'The folder has already existed.'
         status 403
       else

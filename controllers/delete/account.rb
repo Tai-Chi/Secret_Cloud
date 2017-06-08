@@ -5,11 +5,11 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/delete/account/?' do
     content_type 'application/json'
     begin
-      username, passwd = JsonParser.call(request, 'username', 'passwd')
-      username = username.to_s
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      passwd = JsonParser.call(request, 'passwd')
       passwd = passwd.to_s
-      account = Account[name: username]
-      if account == nil
+      if !account.passwd? passwd
         logger.info 'Such account does not exist!'
         status 403
       elsif !account.passwd? passwd

@@ -5,10 +5,9 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/download/execute/?' do
     content_type 'application/json'
     begin
-      username = JsonParser.call(request, 'username')
-      username = username.to_s
-      tree = self.get_tree(username)
-      halt 403, 'The username does not exist!!' if tree == nil
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      tree = self.get_tree(account.name)
       halt 403, 'Nothing to be downloaded' if tree.dl_queue.empty?
       src_path, dst_path = tree.dl_queue.pop
       file = tree.find_file(src_path,1)

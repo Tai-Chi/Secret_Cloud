@@ -5,12 +5,13 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/rename/file/?' do
     content_type 'application/json'
     begin
-      username, old_path, new_name = JsonParser.call(request, 'username', 'old_path', 'new_name')
-      username = username.to_s
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      old_path, new_name = JsonParser.call(request, 'old_path', 'new_name')
       old_path = old_path.to_s
       new_name = new_name.to_s
       pathUnits, old_name = SplitPath.call(old_path, true)
-      dir = self.get_tree(username).find_file(pathUnits)
+      dir = self.get_tree(account.name).find_file(pathUnits)
       if dir == nil
         logger.info 'The specified file does not exist!!'
         status 403

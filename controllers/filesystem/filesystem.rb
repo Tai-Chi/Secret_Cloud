@@ -25,11 +25,9 @@ class FileSystemSyncAPI < Sinatra::Base
     # httpie, this specification is not required.
     content_type 'application/json; charset=utf-8'
     begin
-      username = JsonParser.call(request, 'username')
-      halt 403, 'Username cannot be null!!' if username == nil
-      username = username.to_s
-      tree = self.get_tree(username)
-      halt 403, 'This account does not exist!!' if tree == nil
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      tree = self.get_tree(account.name)
       body self.DFS(tree.root_dir).to_json
       logger.info "RETURN FILESYSTEM SUCCESSFULLY"
       status 200
