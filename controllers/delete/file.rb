@@ -4,10 +4,11 @@ require 'sinatra'
 class FileSystemSyncAPI < Sinatra::Base
     post '/delete/file/?' do
     begin
-      username, path = JsonParser.call(request, 'username', 'path')
-      username = username.to_s
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      path = JsonParser.call(request, 'path')
       path = path.to_s
-      tree = self.get_tree(username)
+      tree = self.get_tree(account.name)
       pathUnits, fname = SplitPath.call(path, true)
       pdir = (pathUnits.size <= 1) ? tree.root_dir : tree.find_file(pathUnits)
       if pdir == nil

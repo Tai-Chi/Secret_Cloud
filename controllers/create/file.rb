@@ -5,20 +5,21 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/create/file/?' do
     content_type 'application/json'
     begin
-      username, path, portion, size = JsonParser.call(request, 'username', 'path', 'portion', 'size')
-      if username==nil || path==nil || portion==nil || size==nil
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      path, portion, size = JsonParser.call(request, 'path', 'portion', 'size')
+      if path==nil || portion==nil || size==nil
         logger.info "Any parameter cannot be null."
         status 403
       else
         # Type checking
-        username = username.to_s
         path = path.to_s
         portion = Integer(portion)
         # gfid = gfid.to_s
         size = Integer(size)
 
         # Body
-        uid = GetAccountID.call(username)
+        uid = account.id
         pathUnits, fName = SplitPath.call(path, true)
         dir, state = self.create_folder(uid, pathUnits)
         if state == :blocked

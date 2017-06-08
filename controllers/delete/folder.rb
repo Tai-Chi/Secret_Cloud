@@ -4,10 +4,11 @@ require 'sinatra'
 class FileSystemSyncAPI < Sinatra::Base
     post '/delete/folder/?' do
     begin
-      username, path = JsonParser.call(request, 'username', 'path')
-      username = username.to_s
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      path = JsonParser.call(request, 'path')
       path = path.to_s
-      tree = self.get_tree(username)
+      tree = self.get_tree(account.name)
       pathUnits = SplitPath.call(path)
       pdir = (pathUnits.size <= 1) ? tree.root_dir : tree.find_file(pathUnits[0..-2])
       dir = tree.find_file(pathUnits)
@@ -16,11 +17,11 @@ class FileSystemSyncAPI < Sinatra::Base
         status 403
       else
         gaccount_gfid_list = dir.recur_delete
+        pdir.list.delete(dir)
         if gaccount_gfid_list == nil || gaccount_gfid_list.size <= 0
           logger.info 'The folder is empty!!'
           status 403
         else
-          pdir.list.delete(dir)
           logger.info 'DELETE FOLDER SUCCESSFULLY'
           logger.info "DELETED Gaccounts/Gfid(s): #{gaccount_gfid_list.join(' ')}"
           body gaccount_gfid_list.join("\n")

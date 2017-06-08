@@ -4,13 +4,14 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/update/space/?' do
     content_type 'application/json'
     begin
-      username, gaccount, space = JsonParser.call(request, 'username', 'gaccount', 'space')
-      if username==nil || gaccount==nil || space==nil
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      gaccount, space = JsonParser.call(request, 'gaccount', 'space')
+      if gaccount==nil || space==nil
         logger.info 'Any parameter cannot be null.'
         status 403
       else
         # Type checking
-        username = username.to_s
         gaccount = gaccount.to_s
         space = Integer(space)
 

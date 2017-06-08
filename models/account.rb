@@ -18,12 +18,9 @@ class Account < Sequel::Model
     JSON({
            type: 'account',
            id: id,
-           attributes: {
-             name: name,
-            #  passwd: passwd
-           }
-         },
-         options)
+           username: name,
+           email: email
+         }, options)
   end
 
 end

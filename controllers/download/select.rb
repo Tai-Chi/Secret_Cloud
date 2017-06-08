@@ -5,12 +5,12 @@ class FileSystemSyncAPI < Sinatra::Base
   post '/download/select/?' do
     content_type 'application/json'
     begin
-      username, src_path, dst_path = JsonParser.call(request, 'username', 'src_path', 'dst_path')
-      username = username.to_s
+      account = authenticated_account(env)
+      _403_if_not_logged_in(account)
+      src_path, dst_path = JsonParser.call(request, 'src_path', 'dst_path')
       src_path = src_path.to_s
       dst_path = dst_path.to_s
-      halt 403, 'This username does not exist!!' if self.get_tree(username) == nil
-      self.get_tree(username).dl_queue.push([src_path, dst_path])
+      self.get_tree(account.name).dl_queue.push([src_path, dst_path])
       logger.info "PUSH DOWNLOAD INFO SUCCESSFULLY"
       status 200
     rescue => e
