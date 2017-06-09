@@ -8,9 +8,11 @@ class FileSystemSyncAPI < Sinatra::Base
       account = authenticated_account(env)
       _403_if_not_logged_in(account)
       tree = self.get_tree(account.name)
+      logger.info "Nothing to be downloaded" if tree.dl_queue.empty?
       halt 403, 'Nothing to be downloaded' if tree.dl_queue.empty?
       src_path, dst_path = tree.dl_queue.pop
       file = tree.find_file(src_path,1)
+      logger.info 'The file to be downloaded does not exist!!' if file == nil
       halt 403, 'The file to be downloaded does not exist!!' if file == nil
       body Gaccount[file.gaccount_id].name + ' ' + file.gfid + ' ' + dst_path
       # Please note that we now assume all files have only

@@ -55,7 +55,7 @@ class FileSystemSyncAPI < Sinatra::Base
           status 403
         elsif (file=dir.find_file(fName, portion)) == nil
           # Find available google drive for this file
-          gaccount = AllocateDriveSpace.call(size)
+          gaccount = AllocateDriveSpace.call(account, size)
           halt 403, 'There is no available drive!!' if gaccount == nil
           # For database
           file = CreateFileinfo.call(name: fName, parent_id: dir.id, account_id: uid, portion: portion, gaccount_id: gaccount[:id], size: size, time: time)
